@@ -1,31 +1,98 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+<h1 >Shopping List Compiler</h1>
 
-Welcome evelynfoy,
+This is a Python command line application which runs in the Code Institute mock terminal on Heroku.
 
-This is the Code Institute student template for deploying your third portfolio project, the Python command-line project. The last update to this file was: **August 17, 2021**
+It is designed for use by a baking establishment but could be used by any business whose products are built from recipes or lists of ingredients/parts.
 
-## Reminders
+It compiles a complete list of ingredients and quantities required to fill the days orders.  
 
-* Your code must be placed in the `run.py` file
-* Your dependencies must be placed in the `requirements.txt` file
-* Do not edit any of the other files or your code may not deploy properly
+&nbsp;  
 
-## Creating the Heroku app
+# How to use
 
-When you create the app, you will need to add two buildpacks from the _Settings_ tab. The ordering is as follows:
+The recipes or lists of ingredients are held on [Google Sheets]( https://en.wikipedia.org/wiki/Google_Sheets).  
 
-1. `heroku/python`
-2. `heroku/nodejs`
+The user is prompted to enter the days orders.
 
-You must then create a _Config Var_ called `PORT`. Set this to `8000`
+The complete list of required ingredients for all the orders are calculated.
 
-If you have credentials, such as in the Love Sandwiches project, you must create another _Config Var_ called `CREDS` and paste the JSON into the value field.
+The Shopping List is then displayed on the screen.
 
-Connect your GitHub repository and deploy as normal.
+E.g. There are recipes provided for 3 different cakes
+1. Lemon cake
+2. Chocolate cake
+3. Carrot cake
 
-## Constraints
+If the days orders are for 2 lemon, 3 chocolate and 1 carrot then the application will print out the complete list of ingredients and amounts required to make them.
+e.g.
+1. Flour - 2 Kg
+2. Butter - 2 lb
+etc
 
-The deployment terminal is set to 80 columns by 24 rows. That means that each line of text needs to be 80 characters or less otherwise it will be wrapped onto a second line.
+&nbsp; 
 
------
-Happy coding!
+# Features
+
+## Existing Features
+
+- The application uses [Google Sheets]( https://en.wikipedia.org/wiki/Google_Sheets) to hold the data required.  
+There is a single spreadsheet called recipes and each recipe has a sheet for its ingredients list where it holds the ingredient name and the quantity required.  
+
+![recipes](docs/images/recipes.PNG)
+
+- To access the spreadsheet the application uses 2 API's (Application Programming Interface).  
+These are set up on the [Google Cloud Platform] (https://console.cloud.google.com/).
+    - The first is Google Drive where it gets its credentials. These are stored in a json file called creds.json
+    - The second is Google Sheets
+
+- Input validation and error-checking
+    - You can only enter positive integers values below 1000.  
+
+- Data maintained in class instances  
+
+- Responsive on all device sizes  
+
+
+## Future Features
+
+- Allow the addition, update, deletion and viewing of recipes
+- Allow the addition, update, deletion and viewing of orders for a particular date
+- Allow the addition, update, deletion and viewing of order levels for each ingredient
+
+# Data Model
+
+# Testing
+
+# Bugs
+
+## Solved Bugs
+
+## Remaining Bugs
+
+# Validator Testing
+
+# Deployment
+
+This project was deployed  using Code Institute's mock terminal for Heroku.
+
+- Stes for deployment:
+    - Fork or clone this repository 
+    - Create a new Heroku app
+    - Set up the buildbacks to <code>Python</code> and <code>NodeJS</code> in that order
+    - Link the Heroku app to the repository
+    - Click on <code>Deploy</code>
+
+
+# Credits
+
+* Code Institute for the deployment terminal
+* [Simen Daehlin](https://github.com/Eventyret "Simen Daehlin") for code inspiration, help and advice.
+
+
+
+
+
+
+
+
+
