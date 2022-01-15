@@ -1,3 +1,4 @@
+
 def get_recipes():
     ''' Read recipes in for recipes spreadsheet on Google Sheets''' 
     import gspread
@@ -19,3 +20,7 @@ def get_recipes():
     data = lemon_cake.get_all_values()
 
     print(data)
+
+def main():
+    ''' This function runs the shopping list compiler application functions '''
+    get_recipes()
