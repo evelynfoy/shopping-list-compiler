@@ -59,6 +59,19 @@ These are set up on the [Google Cloud Platform] (https://console.cloud.google.co
 - Allow the addition, update, deletion and viewing of orders for a particular date
 - Allow the addition, update, deletion and viewing of order levels for each ingredient
 
+# Flowcharts
+You can see the flowcharts for this project here:-  
+
+[Main](docs/images/main.png)  
+[Build Recipe List](docs/images/build_recipe_list.png)  
+[Display Recipe List.png](docs/images/display_recipe_list.png)  
+[Get Order.png](docs/images/get_order.png)  
+[Compile Shopping List](docs/images/compile_shopping_list.png)  
+[Display Orders](docs/images/display_orders.png)  
+[Display Shopping List.png](docs/images/display_shopping_list.png)  
+
+
+
 # Data Model
 
 # Testing
