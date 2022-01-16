@@ -35,4 +35,6 @@ def get_recipes():
 def main():
     ''' This function runs the shopping list compiler application functions '''
     recipes_list = build_recipe_list()
+    print("\n***  Welcome to the Shopping List Compiler Application.   ***\n")
+    print("     Here are the available recipes to order:")
     
