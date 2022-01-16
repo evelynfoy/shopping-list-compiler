@@ -1,3 +1,19 @@
+import model
+
+def build_recipe_list():
+    ''' 
+    This function builds a list of recipes from the spreadsheet in Google Sheets.
+    Each recipe is held as an instance of the recipe class.
+    This holds the recipe name and list of ingredients and quantity .
+    The class recipe 
+    '''
+    RECIPES_SHEET = get_recipes()
+    worksheet_list = RECIPES_SHEET.worksheets()
+    recipes = []
+    for recipe in RECIPES_SHEET:
+        new_recipe = model.Recipe(recipe.title, recipe.get_all_values())
+        recipes.append(new_recipe)
+    return(recipes)    
 
 def get_recipes():
     ''' Read recipes in for recipes spreadsheet on Google Sheets''' 
@@ -18,4 +34,5 @@ def get_recipes():
 
 def main():
     ''' This function runs the shopping list compiler application functions '''
-    recipes_list = get_recipes()
+    recipes_list = build_recipe_list()
+    
