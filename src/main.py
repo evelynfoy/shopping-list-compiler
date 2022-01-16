@@ -14,13 +14,8 @@ def get_recipes():
     SCOPED_CREDS = CREDS.with_scopes(SCOPE)
     GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
     SHEET = GSPREAD_CLIENT.open('recipes')
-
-    lemon_cake = SHEET.worksheet('lemon_cake')
-
-    data = lemon_cake.get_all_values()
-
-    print(data)
+    return SHEET
 
 def main():
     ''' This function runs the shopping list compiler application functions '''
-    get_recipes()
+    recipes_list = get_recipes()
