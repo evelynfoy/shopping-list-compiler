@@ -45,16 +45,16 @@ def display_recipe_list(recipes_list):
         recipe_title = recipes_list[index].name.replace("_", " ").title()
         print(f"{SPACES}{index + 1}) {recipe_title}")
 
-def get_order(recipes_list):
+def get_order(recipes_list, orders):
     ''' This function gets an order from the screen.'''
     # Get recipe number
     is_valid = False
     while not is_valid:
         try:
-            recipe_number = int(input("\nPlease enter recipe number you wish to order:"))
+            recipe_number = int(input("\nPlease enter recipe number you wish to order:"))1
+            
             if recipe_number > 0 and recipe_number <= len(recipes_list):
                 is_valid = True
-                print(f'Number is {recipe_number}')
             else:
                 print("There is no recipe of that number in the list.")
         except ValueError:
@@ -67,17 +67,24 @@ def get_order(recipes_list):
             quantity = int(input("\nPlease enter the quantity you wish to order:"))
             if quantity > 0 and quantity < 10000:
                 is_valid = True
-                print(f'Quantity is {quantity}')
             else:
                 print("The quantity must be between 0 and 10,000.")
         except ValueError:
             print('That was not a number.')
-
+            
+    # Add order to order dictionary
+    recipe_name = recipes_list[recipe_number-1].name
+    if recipe_name in orders:
+        orders[recipe_name] += quantity
+    else:
+        orders[recipe_name] = quantity
+    print(f"\nYou have ordered {quantity} {recipe_name}(s)")
 
 def main():
     ''' This function runs the shopping list compiler application functions '''
     recipes_list = build_recipe_list()
     print("\n***  Welcome to the Shopping List Compiler Application.   ***\n")
+    orders = {}
     print(f"{SPACES}Here are the available recipes to order:\n")
     display_recipe_list(recipes_list)
-    get_order(recipes_list)
+    get_order(recipes_list, orders)
