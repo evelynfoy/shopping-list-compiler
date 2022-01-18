@@ -79,6 +79,22 @@ def get_order(recipes_list, orders):
         orders[recipe.name] = quantity
     print(f"\nYou have ordered {quantity} {recipe.format_recipe_name()}(s)")
 
+def get_recipe(recipes, name):
+    ''' 
+    Takes in a list of recipe objects and a string. 
+    Loops through the list of recipe objects until one matches the name
+    passed in.
+    Returns a recipe object
+    '''
+    found = False
+    index = 0
+    while not found and index < len(recipes):
+        if recipes[index].name == name:
+            found = True
+        else:
+            index += 1
+    return recipes[index]
+    
 def main():
     ''' This function runs the shopping list compiler application functions '''
     recipes_list = build_recipe_list()
