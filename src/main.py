@@ -113,17 +113,37 @@ def get_ingredient(ingredients, name):
         return None
     else:
         return ingredients[index]
-   
+
+def compile_shopping_list(recipes, orders):
+    ''' 
+    Takes in a list of recipe objects and a dictionary of orders.
+    Reads through the orders and calculates the quantities required for each order
+    according to the ingredients and quantities specified in the recipes
+    Returns a list of ingredients
+    '''
+    shopping_list = []
+    for name in orders:
+        recipe = get_recipe(recipes, name)
+        for ingredient in recipe.ingredients:
+            current_ingredient = get_ingredient(shopping_list, ingredient.name)
+            order_quantity = float(ingredient.quantity) * float(orders[name])
+            if current_ingredient is None:
+                shopping_list.append(model.Ingredient(ingredient.name, order_quantity, ingredient.unit))
+            else:
+                current_ingredient.increase_quantity(order_quantity)
+    return shopping_list
+
 def main():
     ''' This function runs the shopping list compiler application functions '''
     recipes_list = build_recipe_list()
     print("\n***  Welcome to the Shopping List Compiler Application.   ***\n")
     orders = {}
     add_another_order = 'y'
-    while add_another_order.lower() == 'y' :
+    while add_another_order.lower() == 'y':
         print(f"{SPACES}Here are the available recipes to order:\n")
         display_recipe_list(recipes_list)
         get_order(recipes_list, orders)
         add_another_order = input("\nWould you like to enter another order (y/n)?")
         while add_another_order.lower() not in ('y','n'): 
             add_another_order = input("Would you like to enter another order (y/n)?")
+    shopping_list = compile_shopping_list(recipes_list, orders)
