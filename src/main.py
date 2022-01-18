@@ -94,7 +94,26 @@ def get_recipe(recipes, name):
         else:
             index += 1
     return recipes[index]
-    
+
+def get_ingredient(ingredients, name):
+    '''
+    Takes in a list of ingredient objects and a string.
+    Loops through the list of ingredient objects until one matches the name
+    passed in
+    Returns an ingredients object
+    '''
+    found = False
+    index = 0
+    while not found and index < len(ingredients):
+        if ingredients[index].name == name:
+            found = True
+        else:
+            index += 1
+    if not found:
+        return None
+    else:
+        return ingredients[index]
+   
 def main():
     ''' This function runs the shopping list compiler application functions '''
     recipes_list = build_recipe_list()
