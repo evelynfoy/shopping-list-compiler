@@ -84,6 +84,11 @@ def main():
     recipes_list = build_recipe_list()
     print("\n***  Welcome to the Shopping List Compiler Application.   ***\n")
     orders = {}
-    print(f"{SPACES}Here are the available recipes to order:\n")
-    display_recipe_list(recipes_list)
-    get_order(recipes_list, orders)
+    add_another_order = 'y'
+    while add_another_order.lower() == 'y' :
+        print(f"{SPACES}Here are the available recipes to order:\n")
+        display_recipe_list(recipes_list)
+        get_order(recipes_list, orders)
+        add_another_order = input("\nWould you like to enter another order (y/n)?")
+        while add_another_order.lower() not in ('y','n'): 
+            add_another_order = input("Would you like to enter another order (y/n)?")
