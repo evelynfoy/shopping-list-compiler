@@ -28,3 +28,6 @@ class Ingredient:
         self.name = name
         self.quantity = quantity
         self.unit = unit
+
+    def increase_quantity(self, quantity):
+        self.quantity += quantity
