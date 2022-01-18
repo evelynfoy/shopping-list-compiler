@@ -16,6 +16,10 @@ class Recipe:
                 ingredients_list.append(new_ingredient)
         self.ingredients = ingredients_list
 
+    def format_recipe_name(self):
+        recipe_title = self.name.replace("_", " ").title()
+        return recipe_title
+
 class Ingredient:
     '''
     This class holds one ingredient. The name, quantity and unit of item.
