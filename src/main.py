@@ -155,19 +155,30 @@ def display_shopping_list(shopping_list):
     print("\n")
 
 def main():
-    ''' This function runs the shopping list compiler application functions '''
-    recipes_list = build_recipe_list()
-    print("\n***  Welcome to the Shopping List Compiler Application.   ***\n")
-    orders = {}
-    add_another_order = 'y'
-    while add_another_order.lower() == 'y':
-        print(f"{SPACES}Here are the available recipes to order:\n")
-        display_recipe_list(recipes_list)
-        get_order(recipes_list, orders)
-        add_another_order = input("\nWould you like to enter another order (y/n)?")
-        while add_another_order.lower() not in ('y','n'): 
-            add_another_order = input("Would you like to enter another order (y/n)?")
-    shopping_list = compile_shopping_list(recipes_list, orders)
-    display_orders(orders)
-    display_shopping_list(shopping_list)
+    ''' 
+    This function runs the shopping list compiler application functions 
+    '''
+    try:
+        recipes_list = build_recipe_list()
+    except:
+        print('Unfortunately we cannot access the recipes file right now. Please try again later')
+    else:
+        add_another_order = 'y'
+        while add_another_order.lower() == 'y':
+            print("\n***  Welcome to the Shopping List Compiler Application.   ***\n")
+            orders = {}
+            add_another_order = 'y'
+            while add_another_order.lower() == 'y':
+                print(f"{SPACES}Here are the available recipes to order:\n")
+                display_recipe_list(recipes_list)
+                get_order(recipes_list, orders)
+                add_another_order = input("\nWould you like to enter another order (y/n)?")
+                while add_another_order.lower() not in ('y','n'): 
+                    add_another_order = input("Would you like to enter another order (y/n)?")
+            shopping_list = compile_shopping_list(recipes_list, orders)
+            display_orders(orders)
+            display_shopping_list(shopping_list)
+            add_another_order = input("\nWould you like to enter another order (y/n)?")
+            while add_another_order.lower() not in ('y', 'n'): 
+                add_another_order = input("Would you like to enter another order (y/n)?")
     
