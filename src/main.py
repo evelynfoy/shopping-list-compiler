@@ -133,6 +133,15 @@ def compile_shopping_list(recipes, orders):
                 current_ingredient.increase_quantity(order_quantity)
     return shopping_list
 
+def display_orders(orders):
+    ''' Takes in a dictionary of orders
+        Lists out the orders to the screen
+        Returns nothing
+    '''
+    print("\nHere is the list of ingredients you will require to fill your order of:- \n")
+    for order in orders:
+        print(f'{SPACES}{orders[order]} {order.replace("_", " ").title()}(s)')
+
 def main():
     ''' This function runs the shopping list compiler application functions '''
     recipes_list = build_recipe_list()
@@ -147,3 +156,5 @@ def main():
         while add_another_order.lower() not in ('y','n'): 
             add_another_order = input("Would you like to enter another order (y/n)?")
     shopping_list = compile_shopping_list(recipes_list, orders)
+    display_orders(orders)
+    
