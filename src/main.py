@@ -51,7 +51,7 @@ def get_order(recipes_list, orders):
     is_valid = False
     while not is_valid:
         try:
-            recipe_number = int(input("\nPlease enter recipe number you wish to order:"))
+            recipe_number = int(input("\nPlease enter recipe number you wish to order:\n"))
             if recipe_number > 0 and recipe_number <= len(recipes_list):
                 is_valid = True
             else:
@@ -63,7 +63,7 @@ def get_order(recipes_list, orders):
     is_valid = False
     while not is_valid:
         try:
-            quantity = int(input("\nPlease enter the quantity you wish to order:"))
+            quantity = int(input("\nPlease enter the quantity you wish to order:\n"))
             if quantity > 0 and quantity < 10000:
                 is_valid = True
             else:
@@ -172,13 +172,13 @@ def main():
                 print(f"{SPACES}Here are the available recipes to order:\n")
                 display_recipe_list(recipes_list)
                 get_order(recipes_list, orders)
-                add_another_order = input("\nWould you like to enter another order (y/n)?")
+                add_another_order = input("\nWould you like to enter another order (y/n)?\n")
                 while add_another_order.lower() not in ('y','n'): 
-                    add_another_order = input("Would you like to enter another order (y/n)?")
+                    add_another_order = input("Would you like to enter another order (y/n)?\n")
             shopping_list = compile_shopping_list(recipes_list, orders)
             display_orders(orders)
             display_shopping_list(shopping_list)
-            add_another_order = input("\nWould you like to enter another order (y/n)?")
+            add_another_order = input("\nWould you like to enter another order (y/n)?\n")
             while add_another_order.lower() not in ('y', 'n'): 
-                add_another_order = input("Would you like to enter another order (y/n)?")
+                add_another_order = input("Would you like to enter another order (y/n)?\n")
     
