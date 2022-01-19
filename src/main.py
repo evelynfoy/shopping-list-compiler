@@ -79,22 +79,6 @@ def get_order(recipes_list, orders):
         orders[recipe.name] = quantity
     print(f"\nYou have ordered {quantity} {recipe.format_recipe_name()}(s)")
 
-def get_recipe(recipes, name):
-    ''' 
-    Takes in a list of recipe objects and a string. 
-    Loops through the list of recipe objects until one matches the name
-    passed in.
-    Returns a recipe object
-    '''
-    found = False
-    index = 0
-    while not found and index < len(recipes):
-        if recipes[index].name == name:
-            found = True
-        else:
-            index += 1
-    return recipes[index]
-
 def get_ingredient(ingredients, name):
     '''
     Takes in a list of ingredient objects and a string.
@@ -123,7 +107,7 @@ def compile_shopping_list(recipes, orders):
     '''
     shopping_list = []
     for name in orders:
-        recipe = get_recipe(recipes, name)
+        recipe = next((recipe for recipe in recipes if recipe.name == name), None)
         for ingredient in recipe.ingredients:
             current_ingredient = get_ingredient(shopping_list, ingredient.name)
             order_quantity = float(ingredient.quantity) * float(orders[name])
