@@ -134,13 +134,25 @@ def compile_shopping_list(recipes, orders):
     return shopping_list
 
 def display_orders(orders):
-    ''' Takes in a dictionary of orders
-        Lists out the orders to the screen
-        Returns nothing
+    ''' 
+    Takes in a dictionary of orders
+    Lists out the orders to the screen
+    Returns nothing
     '''
     print("\nHere is the list of ingredients you will require to fill your order of:- \n")
     for order in orders:
         print(f'{SPACES}{orders[order]} {order.replace("_", " ").title()}(s)')
+
+def display_shopping_list(shopping_list):
+    ''' 
+    Takes in a list of ingredients
+    Displays then on the screen
+    Returns nothing
+    '''
+    print("\n*** Ingredients List ***\n")
+    for index in range(0, len(shopping_list)):
+        print(f'{SPACES}{index + 1}) {shopping_list[index].name.title()} {shopping_list[index].quantity} {shopping_list[index].unit}')
+    print("\n")
 
 def main():
     ''' This function runs the shopping list compiler application functions '''
@@ -157,4 +169,5 @@ def main():
             add_another_order = input("Would you like to enter another order (y/n)?")
     shopping_list = compile_shopping_list(recipes_list, orders)
     display_orders(orders)
+    display_shopping_list(shopping_list)
     
