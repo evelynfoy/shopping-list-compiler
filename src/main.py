@@ -1,49 +1,43 @@
 import model
+import gspread
+from google.oauth2.service_account import Credentials
 
-# Indents all lines displayed by an equal number of spaces
-SPACES = "     "
-
-def build_recipe_list():
-    ''' 
-    This function builds a list of recipes from the spreadsheet in Google Sheets.
-    Each recipe is held as an instance of the recipe class.
-    This holds the recipe name and list of ingredients and quantity .
-    The class recipe 
-    '''
-    RECIPES_SHEET = get_recipes()
-    worksheet_list = RECIPES_SHEET.worksheets()
-    recipes = []
-    for recipe in RECIPES_SHEET:
-        new_recipe = model.Recipe(recipe.title, recipe.get_all_values())
-        recipes.append(new_recipe)
-    return(recipes)    
-
-def get_recipes():
-    ''' Read recipes in for recipes spreadsheet on Google Sheets''' 
-    import gspread
-    from google.oauth2.service_account import Credentials
-
-    SCOPE = [
+SCOPE = [
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive.file",
         "https://www.googleapis.com/auth/drive"
         ]
+CREDS = Credentials.from_service_account_file('creds.json')
+SCOPED_CREDS = CREDS.with_scopes(SCOPE)
+GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
+RECIPES_SHEET = GSPREAD_CLIENT.open('recipes')
+# Indents all lines displayed by an equal number of spaces
+SPACES = "     "
 
-    CREDS = Credentials.from_service_account_file('creds.json')
-    SCOPED_CREDS = CREDS.with_scopes(SCOPE)
-    GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
-    SHEET = GSPREAD_CLIENT.open('recipes')
-    return SHEET
+
+def build_recipe_list():
+    '''
+    This function builds a list of recipes from the spreadsheet in Google Sheets.
+    Each recipe is held as an instance of the recipe class.
+    This holds the recipe name and list of ingredients and quantity.
+    '''
+    recipes = []
+    for recipe in RECIPES_SHEET:
+        next_recipe = model.Recipe(recipe.title, recipe.get_all_values())
+        recipes.append(next_recipe)
+    return recipes
+
 
 def display_recipe_list(recipes_list):
-    ''' 
+    '''
     This function reads through each recipe and prints it to the screen.
-    It replaces the underscores in the recipe name with spaces and capitalises 
+    It replaces the underscores in the recipe name with spaces and capitalises
     it.
     '''
     for index in range(0, len(recipes_list)):
         recipe_title = recipes_list[index].format_recipe_name()
         print(f"{SPACES}{index + 1}) {recipe_title}")
+
 
 def get_order(recipes_list, orders):
     ''' This function gets an order from the screen.'''
@@ -70,7 +64,7 @@ def get_order(recipes_list, orders):
                 print("The quantity must be between 0 and 10,000.")
         except ValueError:
             print('That was not a number.')
-            
+
     # Add order to order dictionary
     recipe = recipes_list[recipe_number-1]
     if recipe.name in orders:
@@ -79,8 +73,9 @@ def get_order(recipes_list, orders):
         orders[recipe.name] = quantity
     print(f"\nYou have ordered {quantity} {recipe.format_recipe_name()}(s)")
 
+
 def compile_shopping_list(recipes, orders):
-    ''' 
+    '''
     Takes in a list of recipe objects and a dictionary of orders.
     Reads through the orders and calculates the quantities required for each order
     according to the ingredients and quantities specified in the recipes
@@ -98,8 +93,9 @@ def compile_shopping_list(recipes, orders):
                 current_ingredient.increase_quantity(order_quantity)
     return shopping_list
 
+
 def display_orders(orders):
-    ''' 
+    '''
     Takes in a dictionary of orders
     Lists out the orders to the screen
     Returns nothing
@@ -108,8 +104,9 @@ def display_orders(orders):
     for order in orders:
         print(f'{SPACES}{orders[order]} {order.replace("_", " ").title()}(s)')
 
+
 def display_shopping_list(shopping_list):
-    ''' 
+    '''
     Takes in a list of ingredients
     Displays then on the screen
     Returns nothing
@@ -119,9 +116,10 @@ def display_shopping_list(shopping_list):
         print(f'{SPACES}{index + 1}) {shopping_list[index].name.title()} {shopping_list[index].quantity} {shopping_list[index].unit}')
     print("\n")
 
+
 def main():
-    ''' 
-    This function runs the shopping list compiler application functions 
+    '''
+    This function runs the shopping list compiler application functions
     '''
     try:
         recipes_list = build_recipe_list()
@@ -146,4 +144,3 @@ def main():
             add_another_order = input("\nWould you like to enter another order (y/n)?\n")
             while add_another_order.lower() not in ('y', 'n'): 
                 add_another_order = input("Would you like to enter another order (y/n)?\n")
-    
