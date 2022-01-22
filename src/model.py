@@ -35,7 +35,7 @@ class Ingredient:
     '''
     def __init__(self, name, quantity, unit):
         self.name = name
-        self.quantity = quantity
+        self.quantity = float(quantity)
         self.unit = unit
 
     def increase_quantity(self, quantity):

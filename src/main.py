@@ -87,27 +87,63 @@ def get_order(recipes_list, orders):
     if recipe.name in orders:
         orders[recipe.name] += quantity
     else:
-        orders[recipe.name] = quantity
+        orders[recipe.name] = int(quantity)
     print(f"\nYou have ordered {quantity} {recipe.format_recipe_name()}(s)")
 
 
-def compile_shopping_list(recipes, orders):
+def convert_to_stock_unit(recipe_unit, stock_level_unit, value):
+    ''' '''
+    if (stock_level_unit == 'kg' and recipe_unit == 'g'):
+        value /= 1000
+    elif (stock_level_unit == 'l' and recipe_unit == 'ml'):
+        value /= 1000
+    return value
+
+
+def compile_shopping_list(recipes, orders, stock_levels):
     '''
-    Takes in a list of recipe objects and a dictionary of orders.
-    Reads through the orders and calculates the quantities required for each order
-    according to the ingredients and quantities specified in the recipes
+    Takes in a list of recipe objects, a dictionary of orders and a list of
+    stock levels for each ingredient.
+    Reads through the orders and calculates the quantities required for each
+    order according to the ingredients and quantities specified in the recipes
     Returns a list of ingredients
     '''
     shopping_list = []
     for name in orders:
-        recipe = next((recipe for recipe in recipes if recipe.name == name), None)
+        recipe = next((recipe for recipe in recipes
+                       if recipe.name == name), None)
         for ingredient in recipe.ingredients:
-            current_ingredient = next((ingredient for ingredient in shopping_list if ingredient.name == name), None)
-            order_quantity = float(ingredient.quantity) * float(orders[name])
-            if current_ingredient is None:
-                shopping_list.append(model.Ingredient(ingredient.name, order_quantity, ingredient.unit))
+            stock_level = next((stock_level for stock_level
+                                in stock_levels
+                                if stock_level.name == ingredient.name
+                                ), None)
+            shopping_list_entry = next((ing for ing
+                                        in shopping_list
+                                        if ing.name == ingredient.name
+                                        ), None)
+            order_quantity = ingredient.quantity * orders[name]
+            quantity_in_stock = (stock_level.convert_current_level() -
+                                 stock_level.convert_reorder_level())
+            if order_quantity > quantity_in_stock:
+                stock_level.decrease_current_level(quantity_in_stock)
+                addition_amt_required = order_quantity - quantity_in_stock
             else:
-                current_ingredient.increase_quantity(order_quantity)
+                stock_level.decrease_current_level(order_quantity)
+                addition_amt_required = 0
+            if addition_amt_required > 0:
+                if stock_level.unit != ingredient.unit:
+                    display_amt = convert_to_stock_unit(ingredient.unit,
+                                                        stock_level.unit,
+                                                        addition_amt_required)
+                else:
+                    display_amt = addition_amt_required
+                if shopping_list_entry is None:
+                    shopping_list.append(model.Ingredient(ingredient.name,
+                                         display_amt,
+                                         stock_level.unit))
+                else:
+                    shopping_list_entry.increase_quantity(
+                        display_amt)
     return shopping_list
 
 
@@ -159,7 +195,8 @@ def main():
                 add_another_order = input("\nWould you like to enter another order (y/n)?\n")
                 while add_another_order.lower() not in ('y','n'): 
                     add_another_order = input("Would you like to enter another order (y/n)?\n")
-            shopping_list = compile_shopping_list(recipes_list, orders)
+            shopping_list = compile_shopping_list(recipes_list, orders,
+                                                  ingredients_list)
             display_orders(orders)
             display_shopping_list(shopping_list)
             add_another_order = input("\nWould you like to enter another order (y/n)?\n")
