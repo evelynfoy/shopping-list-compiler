@@ -10,22 +10,39 @@ SCOPE = [
 CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
-RECIPES_SHEET = GSPREAD_CLIENT.open('recipes')
+WORKBOOK = GSPREAD_CLIENT.open('recipes_new')
 # Indents all lines displayed by an equal number of spaces
 SPACES = "     "
 
 
-def build_recipe_list():
+def get_spreadsheet_data(recipes, ingredients):
+    ''' '''
+    print('\nPlease wait whie the application information loads..........\n')
+    for sheet in WORKBOOK:
+        if sheet.title == 'stock_levels':
+            ingredients = build_ingredient_list(sheet)
+        else:
+            next_recipe = model.Recipe(sheet.title, sheet.get_all_values())
+            recipes.append(next_recipe)
+    return [recipes, ingredients]
+
+
+def build_ingredient_list(sheet):
     '''
-    This function builds a list of recipes from the spreadsheet in Google Sheets.
-    Each recipe is held as an instance of the recipe class.
-    This holds the recipe name and list of ingredients and quantity.
+    This function builds a list of ingredients from the stock levels sheet in
+    Google Sheets.
+    Each ingredient is held as an instance of the stock_levels class.
+    This holds the ingredient name, unit, the current stock level and the re-order level.
     '''
-    recipes = []
-    for recipe in RECIPES_SHEET:
-        next_recipe = model.Recipe(recipe.title, recipe.get_all_values())
-        recipes.append(next_recipe)
-    return recipes
+    ingredients = []
+    for ingredient in sheet.get_all_values():
+        if ingredient[0] != 'Ingredient':
+            next_ingredient = model.StockLevels(ingredient[0],
+                                                ingredient[1],
+                                                ingredient[2],
+                                                ingredient[3])
+            ingredients.append(next_ingredient)
+    return ingredients
 
 
 def display_recipe_list(recipes_list):
@@ -122,7 +139,11 @@ def main():
     This function runs the shopping list compiler application functions
     '''
     try:
-        recipes_list = build_recipe_list()
+        recipes_list = []
+        ingredients_list = []
+        results = get_spreadsheet_data(recipes_list, ingredients_list)
+        recipes_list = results[0]
+        ingredients_list = results[1]
     except:
         print('Unfortunately we cannot access the recipes file right now. Please try again later')
     else:
