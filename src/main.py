@@ -10,7 +10,7 @@ SCOPE = [
 CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
-WORKBOOK = GSPREAD_CLIENT.open('recipes_new')
+WORKBOOK = GSPREAD_CLIENT.open('recipes')
 # Indents all lines displayed by an equal number of spaces
 SPACES = "     "
 
