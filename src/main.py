@@ -3,17 +3,26 @@ import gspread
 from google.oauth2.service_account import Credentials
 from datetime import date
 
-SCOPE = [
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive.file",
-        "https://www.googleapis.com/auth/drive"
-        ]
-CREDS = Credentials.from_service_account_file('creds.json')
-SCOPED_CREDS = CREDS.with_scopes(SCOPE)
-GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
-WORKBOOK = GSPREAD_CLIENT.open('recipes_new')
+
 # Indents all lines displayed by an equal number of spaces
 SPACES = "     "
+WORKBOOK = None
+
+
+def get_spreadsheet():
+    '''
+    Opens the spreadsheet and passes back a reference
+    '''
+    SCOPE = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive.file",
+            "https://www.googleapis.com/auth/drive"
+            ]
+    CREDS = Credentials.from_service_account_file('creds.json')
+    SCOPED_CREDS = CREDS.with_scopes(SCOPE)
+    GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
+    WORKBOOK = GSPREAD_CLIENT.open('recipes_new')
+    return WORKBOOK
 
 
 def get_spreadsheet_data(recipes, ingredients):
@@ -24,6 +33,8 @@ def get_spreadsheet_data(recipes, ingredients):
     Returns updated lists
     '''
     print('\nPlease wait whie the application information loads..........\n')
+    global WORKBOOK 
+    WORKBOOK = get_spreadsheet()
     for sheet in WORKBOOK:
         if sheet.title == 'stock_levels':
             ingredients = build_ingredient_list(sheet)
