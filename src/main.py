@@ -17,7 +17,12 @@ SPACES = "     "
 
 
 def get_spreadsheet_data(recipes, ingredients):
-    ''' '''
+    '''
+    Takes a list of recipes and a list of ingredient stock levels.
+    Load data from Google spreadsheet into lists.
+    Ignores shopping_list tab as that is not required.
+    Returns updated lists
+    '''
     print('\nPlease wait whie the application information loads..........\n')
     for sheet in WORKBOOK:
         if sheet.title == 'stock_levels':
@@ -52,7 +57,7 @@ def build_ingredient_list(sheet):
 
 def display_recipe_list(recipes_list):
     '''
-    This function reads through each recipe and prints it to the screen.
+    This function reads through each recipe and prints it's name to the screen.
     It replaces the underscores in the recipe name with spaces and capitalises
     it.
     '''
@@ -97,7 +102,10 @@ def get_order(recipes_list, orders):
 
 
 def convert_to_stock_unit(recipe_unit, stock_level_unit, value):
-    ''' '''
+    '''
+    Takes the unit specified in the recipe, the unit specified in the stock levels and the value required
+    Returns the value converted to kg from grams or litres from ml
+    '''
     if (stock_level_unit == 'kg' and recipe_unit == 'g'):
         value /= 1000
     elif (stock_level_unit == 'l' and recipe_unit == 'ml'):
@@ -220,10 +228,9 @@ def main():
             display_recipe_list(recipes_list)
             get_order(recipes_list, orders)
             add_another_order = input("\nWould you like to enter another order (y/n)?\n")
-            while add_another_order.lower() not in ('y', 'n'): 
+            while add_another_order.lower() not in ('y', 'n'):
                 add_another_order = input("Would you like to enter another order (y/n)?\n")
         shopping_list = compile_shopping_list(recipes_list, orders,
                                               ingredients_list)
         display_orders(orders)
         display_shopping_list(shopping_list)
-            
