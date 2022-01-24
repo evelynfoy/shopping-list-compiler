@@ -10,17 +10,21 @@ It compiles a list of ingredients and quantities required to fill the days order
 It holds the current stock and re-order levels for each ingredient and only includes ingredients in the shopping list that do not have
 sufficient quantities in stock.
 
+It also converts grams to Kg and ml to litres for ordering.
+
 &nbsp;  
 
 # How to use
 
-The recipes or lists of ingredients are held on [Google Sheets]( https://en.wikipedia.org/wiki/Google_Sheets).  
+The lists of ingredients required for each recipe are held on [Google Sheets]( https://en.wikipedia.org/wiki/Google_Sheets).  
 
 This workbook also includes a sheet for the stock and re-order levels for each ingredient.
 
-The user is prompted to enter the days orders.
+The user is prompted to enter the days orders. This could be the orders for the coming week.
 
-The complete list of required ingredients for all the orders are calculated.
+The application goes through all the orders calculating how much of each ingredient is required and comparing this to the current stock levels to ensure that   
+1)  An ingredient is only listed if the required amount is > (current stock level - reorder level)
+2) The required amount of the ingredient listed = required amount - (current stock - re-order level) i.e. required amount - avaliable amount in stock
 
 The Shopping List is then displayed on the screen.
 
@@ -42,11 +46,11 @@ etc
 ## Existing Features
 
 - The application uses [Google Sheets]( https://en.wikipedia.org/wiki/Google_Sheets) to hold the data required.  
-There is a single spreadsheet called recipes and each recipe has a sheet for its ingredients list where it holds the ingredient name and the quantity required.  
+There is a single spreadsheet called recipes and each recipe has a sheet for its ingredients list where it holds the ingredient name, the quantity required and the unit.  
 
 ![recipes](docs/images/recipes.PNG)
 
-- There is also a sheet for the stock and re-order levels for each ingredient.
+- There is also a sheet for the stock and re-order levels for each ingredient. This also has a unit value which can differ from the recipe unit.
 
 ![recipes](docs/images/stock_levels.png)
 
@@ -56,12 +60,35 @@ These are set up on the [Google Cloud Platform] (https://console.cloud.google.co
     - The second is Google Sheets
 
 - Input validation and error-checking
-    - You can only enter positive integers values below 1000.
+    - The quantity of the order must be between 1 and 1000.
     - You can only enter recipe numbers that exist in the displayed list.
     - Answers to Y/N questions are validated.
-    - An error is displayed if the sheet can not be retrieved from Google Sheets  
+    - An error is displayed if the spreadsheet can not be retrieved from Google Sheets  
 
 - Data maintained in class instances  
+
+- Reads all recipes stored on the spreadsheet and displays then on the screen. It displays a formated version of the tab name and a number. 
+
+![recipes](docs/images/recipe_list.png)
+
+- Requests a recipe number to order. This is validated and continually requested until a valid entry is made. 
+
+![recipes](docs/images/qunatity_error.png)
+
+- Requests a qunatity to order. This is validated and continually requested until a valid entry is made. 
+
+![recipes](docs/images/recipe_number_error.png)
+
+- Displays the order entered and requests if another order is to be entered until the answer is 'n' or 'N'.
+
+![recipes](docs/images/quantity_error.png)
+
+- Calculates the required amount of each ingredient lissted for all the recipes in the order. Amounts are only listed if required anount > current amount in stock - reorder level.
+
+- Displays the list of required items on the screen, in a text file and in a tab on the spreadsheet called 'shopping-list'.
+
+![recipes](docs/images/shopping_list_output.png)
+![recipes](docs/images/shopping_list_tab.png)
 
 - Responsive on all device sizes  
 
