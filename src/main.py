@@ -1,6 +1,7 @@
 import model
 import gspread
 from google.oauth2.service_account import Credentials
+from datetime import date
 
 SCOPE = [
         "https://www.googleapis.com/auth/spreadsheets",
@@ -10,7 +11,7 @@ SCOPE = [
 CREDS = Credentials.from_service_account_file('creds.json')
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
-WORKBOOK = GSPREAD_CLIENT.open('recipes')
+WORKBOOK = GSPREAD_CLIENT.open('recipes_new')
 # Indents all lines displayed by an equal number of spaces
 SPACES = "     "
 
@@ -21,9 +22,13 @@ def get_spreadsheet_data(recipes, ingredients):
     for sheet in WORKBOOK:
         if sheet.title == 'stock_levels':
             ingredients = build_ingredient_list(sheet)
-        else:
-            next_recipe = model.Recipe(sheet.title, sheet.get_all_values())
-            recipes.append(next_recipe)
+        elif sheet.title != 'shopping_list':
+            try:
+                next_recipe = model.Recipe(sheet.title, sheet.get_all_values())
+            except gspread.exceptions.SpreadsheetNotFound:
+                print('Unfortunately we cannot access the recipes file right now. Please try again later')
+            else:
+                recipes.append(next_recipe)
     return [recipes, ingredients]
 
 
@@ -150,24 +155,48 @@ def compile_shopping_list(recipes, orders, stock_levels):
 def display_orders(orders):
     '''
     Takes in a dictionary of orders
-    Lists out the orders to the screen
+    Lists out the orders to the screen, writes them to a text file and to
+    Google Sheets
     Returns nothing
     '''
     print("\nHere is the list of ingredients you will require to fill your order of:- \n")
-    for order in orders:
-        print(f'{SPACES}{orders[order]} {order.replace("_", " ").title()}(s)')
+    today = date.today().strftime("%d/%m/%Y")
+    shopping_list_sheet = WORKBOOK.worksheet("shopping_list")
+    with open('shopping_list.txt', 'w') as outfile:
+        outfile.write(f"\nDate: {today}\n")
+        outfile.write("\n*** Orders List ***\n")
+        shopping_list_sheet.clear()
+        shopping_list_sheet.append_row(['Date', 'Orders', 'Quantity'])
+        for order in orders:
+            print(f'{SPACES}{orders[order]} {order.replace("_", " ").title()}(s)')
+            outfile.write(f'{SPACES}{orders[order]} {order.replace("_", " ").title()}(s)')
+            outfile.write('\n')
+            shopping_list_sheet.append_row([str(today),
+                                            order.replace("_", " ").title()
+                                            + '(s)', str(orders[order])])
+        shopping_list_sheet.append_row([' ', '-------------------'])
 
 
 def display_shopping_list(shopping_list):
     '''
     Takes in a list of ingredients
-    Displays then on the screen
+    Displays then on the screen, writes them to a text file and to Google 
+    Sheets
     Returns nothing
     '''
-    print("\n*** Ingredients List ***\n")
-    for index in range(0, len(shopping_list)):
-        print(f'{SPACES}{index + 1}) {shopping_list[index].name.title()} {shopping_list[index].quantity} {shopping_list[index].unit}')
-    print("\n")
+    sheet = WORKBOOK.worksheet("shopping_list")
+    with open('shopping_list.txt', 'w') as outfile:
+        outfile.write("\n*** Ingredients List ***\n")
+        print("\n*** Ingredients List ***\n")
+        sheet.append_row(['Item', 'Ingredients', 'Quantity', 'Unit'])
+        for index in range(0, len(shopping_list)):
+            item = shopping_list[index]
+            print(f'{SPACES}{index + 1}) {item.name.title()} {item.quantity} {item.unit}')
+            outfile.write(f'{SPACES}{index + 1}) {item.name.title()} {item.quantity} {item.unit}')
+            outfile.write('\n')
+            sheet.append_row([str(index + 1), item.name.title(), str(item.quantity), item.unit])
+        print("\n")
+        sheet.append_row([' ', '-------------------'])
 
 
 def main():
