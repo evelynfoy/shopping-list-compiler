@@ -212,22 +212,18 @@ def main():
     except:
         print('Unfortunately we cannot access the recipes file right now. Please try again later')
     else:
+        print("\n***  Welcome to the Shopping List Compiler Application.   ***\n")
+        orders = {}
         add_another_order = 'y'
         while add_another_order.lower() == 'y':
-            print("\n***  Welcome to the Shopping List Compiler Application.   ***\n")
-            orders = {}
-            add_another_order = 'y'
-            while add_another_order.lower() == 'y':
-                print(f"{SPACES}Here are the available recipes to order:\n")
-                display_recipe_list(recipes_list)
-                get_order(recipes_list, orders)
-                add_another_order = input("\nWould you like to enter another order (y/n)?\n")
-                while add_another_order.lower() not in ('y','n'): 
-                    add_another_order = input("Would you like to enter another order (y/n)?\n")
-            shopping_list = compile_shopping_list(recipes_list, orders,
-                                                  ingredients_list)
-            display_orders(orders)
-            display_shopping_list(shopping_list)
+            print(f"{SPACES}Here are the available recipes to order:\n")
+            display_recipe_list(recipes_list)
+            get_order(recipes_list, orders)
             add_another_order = input("\nWould you like to enter another order (y/n)?\n")
             while add_another_order.lower() not in ('y', 'n'): 
                 add_another_order = input("Would you like to enter another order (y/n)?\n")
+        shopping_list = compile_shopping_list(recipes_list, orders,
+                                              ingredients_list)
+        display_orders(orders)
+        display_shopping_list(shopping_list)
+            
