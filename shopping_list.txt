@@ -1,9 +1,10 @@
 
+Date: 25/01/2022
+
+*** Orders List ***
+     10 Lemon Cake(s)
+
 *** Ingredients List ***
-     1) Unsalted Butter 4.25 kg
-     2) Eggs 110.0 
+     1) Unsalted Butter 0.25 kg
+     2) Eggs 30.0 
      3) Lemon 5.0 
-     4) Golden Caster Sugar 1.0 kg
-     5) Self-Raising Flour 3.25 kg
-     6) Butter 2.0 kg
-     7) Icing Sugar 5.0 kg
