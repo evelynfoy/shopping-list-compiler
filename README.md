@@ -266,6 +266,7 @@ This project was deployed using Code Institute's mock terminal for Heroku.
 
 * Code Institute for the deployment terminal and help and inspiration for the love-sandwiches run through project.
 * [Simen Daehlin](https://github.com/Eventyret "Simen Daehlin") for code inspiration, help and advice.
+* Stack Overflow for help and assistance - https://stackoverflow.com/
 
 
 
