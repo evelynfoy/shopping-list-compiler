@@ -1,7 +1,11 @@
-import model
+'''
+Contains all the main functions for the application
+'''
+
+from datetime import date
 import gspread
 from google.oauth2.service_account import Credentials
-from datetime import date
+import model
 
 
 # Indents all lines displayed by an equal number of spaces
@@ -21,8 +25,8 @@ def get_spreadsheet():
     CREDS = Credentials.from_service_account_file('creds.json')
     SCOPED_CREDS = CREDS.with_scopes(SCOPE)
     GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
-    WORKBOOK = GSPREAD_CLIENT.open('recipes')
-    return WORKBOOK
+    file = GSPREAD_CLIENT.open('recipes')
+    return file
 
 
 def get_spreadsheet_data(recipes, ingredients):
@@ -33,7 +37,7 @@ def get_spreadsheet_data(recipes, ingredients):
     Returns updated lists
     '''
     print('\nPlease wait while the application information loads..........\n')
-    global WORKBOOK 
+    global WORKBOOK
     WORKBOOK = get_spreadsheet()
     for sheet in WORKBOOK:
         if sheet.title == 'stock_levels':
@@ -42,7 +46,8 @@ def get_spreadsheet_data(recipes, ingredients):
             try:
                 next_recipe = model.Recipe(sheet.title, sheet.get_all_values())
             except gspread.exceptions.SpreadsheetNotFound:
-                print('Unfortunately we cannot access the recipes file right now. Please try again later')
+                print('Unfortunately we cannot access the recipes file right \
+now. Please try again later')
             else:
                 recipes.append(next_recipe)
     return [recipes, ingredients]
@@ -53,7 +58,8 @@ def build_ingredient_list(sheet):
     This function builds a list of ingredients from the stock levels sheet in
     Google Sheets.
     Each ingredient is held as an instance of the stock_levels class.
-    This holds the ingredient name, unit, the current stock level and the re-order level.
+    This holds the ingredient name, unit, the current stock level and the
+    re-order level.
     '''
     ingredients = []
     for ingredient in sheet.get_all_values():
@@ -71,6 +77,7 @@ def display_recipe_list(recipes_list):
     This function reads through each recipe and prints it's name to the screen.
     It replaces the underscores in the recipe name with spaces and capitalises
     it.
+    It takes a list of recipe objects and returns nothing
     '''
     for index in range(0, len(recipes_list)):
         recipe_title = recipes_list[index].format_recipe_name()
@@ -78,12 +85,21 @@ def display_recipe_list(recipes_list):
 
 
 def get_order(recipes_list, orders):
-    ''' This function gets an order from the screen.'''
+    '''
+    This function gets an order from the screen and validates each element.
+    The order comprises a recipe number and a quantity.
+    It takes a list of objects and a dictionary of orders.
+    If recipe exists in the order dictionary it increases the quantity of the
+    order.
+    If not it adds the recipe to the order.
+    It returns the revised orders dictionary.
+    '''
     # Get recipe number
     is_valid = False
     while not is_valid:
         try:
-            recipe_number = int(input("\nPlease enter recipe number you wish to order:\n"))
+            recipe_number = int(input("\nPlease enter recipe number you wish \
+to order:\n"))
             if recipe_number > 0 and recipe_number <= len(recipes_list):
                 is_valid = True
             else:
@@ -95,7 +111,8 @@ def get_order(recipes_list, orders):
     is_valid = False
     while not is_valid:
         try:
-            quantity = int(input("\nPlease enter the quantity you wish to order:\n"))
+            quantity = int(input("\nPlease enter the quantity you wish to \
+order:\n"))
             if quantity > 0 and quantity < 10000:
                 is_valid = True
             else:
@@ -114,7 +131,8 @@ def get_order(recipes_list, orders):
 
 def convert_to_stock_unit(recipe_unit, stock_level_unit, value):
     '''
-    Takes the unit specified in the recipe, the unit specified in the stock levels and the value required
+    Takes the unit specified in the recipe, the unit specified in the stock
+    levels and the value required
     Returns the value converted to kg from grams or litres from ml
     '''
     if (stock_level_unit == 'kg' and recipe_unit == 'g'):
@@ -178,7 +196,8 @@ def display_orders(orders):
     Google Sheets
     Returns nothing
     '''
-    print("\nHere is the list of ingredients you will require to fill your order of:- \n")
+    print("\nHere is the list of ingredients you will require to fill your \
+order of:- \n")
     today = date.today().strftime("%d/%m/%Y")
     shopping_list_sheet = WORKBOOK.worksheet("shopping_list")
     with open('shopping_list.txt', 'w') as outfile:
@@ -187,19 +206,21 @@ def display_orders(orders):
         shopping_list_sheet.clear()
         shopping_list_sheet.append_row(['Date', 'Orders', 'Quantity'])
         for order in orders:
-            print(f'{SPACES}{orders[order]} {order.replace("_", " ").title()}(s)')
-            outfile.write(f'{SPACES}{orders[order]} {order.replace("_", " ").title()}(s)')
+            print(f'{SPACES}{orders[order]} {order.replace("_", " ").title()} \
+(s)')
+            outfile.write(f'{SPACES}{orders[order]} \
+{order.replace("_", " ").title()}(s)')
             outfile.write('\n')
             shopping_list_sheet.append_row([str(today),
-                                            order.replace("_", " ").title()
-                                            + '(s)', str(orders[order])])
+                                            order.replace("_", " ").title() +
+                                            '(s)', str(orders[order])])
         shopping_list_sheet.append_row([' ', '-------------------'])
 
 
 def display_shopping_list(shopping_list):
     '''
     Takes in a list of ingredients
-    Displays then on the screen, writes them to a text file and to Google 
+    Displays then on the screen, writes them to a text file and to Google
     Sheets
     Returns nothing
     '''
@@ -210,10 +231,13 @@ def display_shopping_list(shopping_list):
         sheet.append_row(['Item', 'Ingredients', 'Quantity', 'Unit'])
         for index in range(0, len(shopping_list)):
             item = shopping_list[index]
-            print(f'{SPACES}{index + 1}) {item.name.title()} {item.quantity} {item.unit}')
-            outfile.write(f'{SPACES}{index + 1}) {item.name.title()} {item.quantity} {item.unit}')
+            print(f'{SPACES}{index + 1}) {item.name.title()} {item.quantity} \
+{item.unit}')
+            outfile.write(f'{SPACES}{index + 1}) {item.name.title()} \
+{item.quantity} {item.unit}')
             outfile.write('\n')
-            sheet.append_row([str(index + 1), item.name.title(), str(item.quantity), item.unit])
+            sheet.append_row([str(index + 1), item.name.title(),
+                             str(item.quantity), item.unit])
         print("\n")
         sheet.append_row([' ', '-------------------'])
 
@@ -223,31 +247,37 @@ def main():
     This function runs the main application functions
     '''
     restart = 'y'
-    while restart.lower() == 'y': 
+    while restart.lower() == 'y':
         try:
             recipes_list = []
             ingredients_list = []
             results = get_spreadsheet_data(recipes_list, ingredients_list)
             recipes_list = results[0]
             ingredients_list = results[1]
-        except:
-            print('Unfortunately we cannot access the recipes file right now. Please try again later')
+        except gspread.exceptions.SpreadsheetNotFound:
+            print('Unfortunately we cannot access the recipes file right now.')
+            print('Please try again later')
+            restart = 'n'
         else:
-            print("\n***  Welcome to the Shopping List Compiler Application.   ***\n")
+            print("\n***  Welcome to the Shopping List Compiler Application.  \
+ ***\n")
             orders = {}
             add_another_order = 'y'
             while add_another_order.lower() == 'y':
                 print(f"{SPACES}Here are the available recipes to order:\n")
                 display_recipe_list(recipes_list)
                 get_order(recipes_list, orders)
-                add_another_order = input("\nWould you like to enter another order (y/n)?\n")
+                add_another_order = input("\nWould you like to enter another \
+order (y/n)?\n")
                 while add_another_order.lower() not in ('y', 'n'):
-                    add_another_order = input("Would you like to enter another order (y/n)?\n")
+                    add_another_order = input("Would you like to enter another \
+order (y/n)?\n")
             shopping_list = compile_shopping_list(recipes_list, orders,
-                                                ingredients_list)
+                                                  ingredients_list)
             display_orders(orders)
             display_shopping_list(shopping_list)
             restart = input("\nWould you like to restart the application?\n")
-            while restart.lower() not in ('y', 'n'): 
-                restart = input("\nWould you like to restart the application?\n")
-    print("\n*** Goodbye. Thank you for using the Shopping List Compiler Application ***\n")
+            while restart.lower() not in ('y', 'n'):
+                restart = input("Would you like to restart the application?\n")
+    print("\n*** Goodbye. Thank you for using the Shopping List Compiler \
+Application ***\n")
