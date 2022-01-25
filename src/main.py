@@ -21,7 +21,7 @@ def get_spreadsheet():
     CREDS = Credentials.from_service_account_file('creds.json')
     SCOPED_CREDS = CREDS.with_scopes(SCOPE)
     GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
-    WORKBOOK = GSPREAD_CLIENT.open('recipes_new')
+    WORKBOOK = GSPREAD_CLIENT.open('recipes')
     return WORKBOOK
 
 
@@ -32,7 +32,7 @@ def get_spreadsheet_data(recipes, ingredients):
     Ignores shopping_list tab as that is not required.
     Returns updated lists
     '''
-    print('\nPlease wait whie the application information loads..........\n')
+    print('\nPlease wait while the application information loads..........\n')
     global WORKBOOK 
     WORKBOOK = get_spreadsheet()
     for sheet in WORKBOOK:
@@ -204,7 +204,7 @@ def display_shopping_list(shopping_list):
     Returns nothing
     '''
     sheet = WORKBOOK.worksheet("shopping_list")
-    with open('shopping_list.txt', 'w') as outfile:
+    with open('shopping_list.txt', 'a') as outfile:
         outfile.write("\n*** Ingredients List ***\n")
         print("\n*** Ingredients List ***\n")
         sheet.append_row(['Item', 'Ingredients', 'Quantity', 'Unit'])
@@ -220,28 +220,34 @@ def display_shopping_list(shopping_list):
 
 def main():
     '''
-    This function runs the shopping list compiler application functions
+    This function runs the main application functions
     '''
-    try:
-        recipes_list = []
-        ingredients_list = []
-        results = get_spreadsheet_data(recipes_list, ingredients_list)
-        recipes_list = results[0]
-        ingredients_list = results[1]
-    except:
-        print('Unfortunately we cannot access the recipes file right now. Please try again later')
-    else:
-        print("\n***  Welcome to the Shopping List Compiler Application.   ***\n")
-        orders = {}
-        add_another_order = 'y'
-        while add_another_order.lower() == 'y':
-            print(f"{SPACES}Here are the available recipes to order:\n")
-            display_recipe_list(recipes_list)
-            get_order(recipes_list, orders)
-            add_another_order = input("\nWould you like to enter another order (y/n)?\n")
-            while add_another_order.lower() not in ('y', 'n'):
-                add_another_order = input("Would you like to enter another order (y/n)?\n")
-        shopping_list = compile_shopping_list(recipes_list, orders,
-                                              ingredients_list)
-        display_orders(orders)
-        display_shopping_list(shopping_list)
+    restart = 'y'
+    while restart.lower() == 'y': 
+        try:
+            recipes_list = []
+            ingredients_list = []
+            results = get_spreadsheet_data(recipes_list, ingredients_list)
+            recipes_list = results[0]
+            ingredients_list = results[1]
+        except:
+            print('Unfortunately we cannot access the recipes file right now. Please try again later')
+        else:
+            print("\n***  Welcome to the Shopping List Compiler Application.   ***\n")
+            orders = {}
+            add_another_order = 'y'
+            while add_another_order.lower() == 'y':
+                print(f"{SPACES}Here are the available recipes to order:\n")
+                display_recipe_list(recipes_list)
+                get_order(recipes_list, orders)
+                add_another_order = input("\nWould you like to enter another order (y/n)?\n")
+                while add_another_order.lower() not in ('y', 'n'):
+                    add_another_order = input("Would you like to enter another order (y/n)?\n")
+            shopping_list = compile_shopping_list(recipes_list, orders,
+                                                ingredients_list)
+            display_orders(orders)
+            display_shopping_list(shopping_list)
+            restart = input("\nWould you like to restart the application?\n")
+            while restart.lower() not in ('y', 'n'): 
+                restart = input("\nWould you like to restart the application?\n")
+    print("\n*** Goodbye. Thank you for using the Shopping List Compiler Application ***\n")
